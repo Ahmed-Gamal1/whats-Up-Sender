@@ -53,6 +53,10 @@ function initializeWhatsApp() {
         client = null;
     }
 
+    // تحديد مسار Chromium على Railway
+    const chromiumPath = process.env.PUPPETEER_EXECUTABLE_PATH || 
+                         (process.platform === 'linux' ? '/nix/store/*/chromium-*/bin/chromium' : undefined);
+
     client = new Client({
         authStrategy: new LocalAuth(), // يحفظ الجلسة تلقائياً
         puppeteer: {
@@ -70,10 +74,12 @@ function initializeWhatsApp() {
                 '--single-process',
                 '--disable-background-timer-throttling',
                 '--disable-backgrounding-occluded-windows',
-                '--disable-renderer-backgrounding'
+                '--disable-renderer-backgrounding',
+                '--disable-features=IsolateOrigins,site-per-process'
             ],
             // إعدادات إضافية للـ Railway
-            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
+            executablePath: chromiumPath,
+            ignoreHTTPSErrors: true,
         },
         webVersionCache: {
             type: 'remote',
