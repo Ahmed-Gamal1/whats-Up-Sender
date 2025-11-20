@@ -8,9 +8,29 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+        credentials: true
+    },
+    transports: ['polling', 'websocket'],
+    allowEIO3: true
+});
 
 const PORT = process.env.PORT || 3000;
+
+// CORS middleware
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    if (req.method === 'OPTIONS') {
+        res.sendStatus(200);
+    } else {
+        next();
+    }
+});
 
 app.use(express.json());
 app.use(express.static('public'));
@@ -263,6 +283,15 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
+// Health check endpoint for Railway
+app.get('/health', (req, res) => {
+    res.status(200).json({ 
+        status: 'ok', 
+        whatsapp: isReady ? 'connected' : 'disconnected',
+        timestamp: new Date().toISOString()
+    });
+});
+
 // جلب الجروبات
 app.get('/api/groups', async (req, res) => {
     if (!isReady) {
@@ -370,7 +399,8 @@ io.on('connection', (socket) => {
 });
 
 // تشغيل السيرفر
-server.listen(PORT, () => {
-    console.log(`🌐 السيرفر شغال على http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`🌐 السيرفر شغال على البورت ${PORT}`);
+    console.log(`🌐 Railway URL: ${process.env.RAILWAY_PUBLIC_DOMAIN || 'Not set'}`);
     initializeWhatsApp();
 });
