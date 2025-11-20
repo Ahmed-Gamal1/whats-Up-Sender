@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# WhatsApp Session (مهم جداً - لا ترفعه!)
+.wwebjs_auth/
+.wwebjs_cache/
+
+# Environment variables
+.env
+.env.local
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+
+# Build files
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp
+
