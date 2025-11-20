@@ -64,8 +64,16 @@ function initializeWhatsApp() {
                 '--disable-accelerated-2d-canvas',
                 '--no-first-run',
                 '--no-zygote',
-                '--disable-gpu'
-            ]
+                '--disable-gpu',
+                '--disable-software-rasterizer',
+                '--disable-extensions',
+                '--single-process',
+                '--disable-background-timer-throttling',
+                '--disable-backgrounding-occluded-windows',
+                '--disable-renderer-backgrounding'
+            ],
+            // إعدادات إضافية للـ Railway
+            executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || undefined,
         },
         webVersionCache: {
             type: 'remote',
